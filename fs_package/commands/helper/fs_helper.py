@@ -20,6 +20,10 @@ def add_file(dir_path, *args) -> bool:
     file_path = args[0]
     base_dir_path = os.path.join(dir_path, BASE_FS_PATH)
 
+    if not check_file(base_dir_path):
+        print("FS not initialized!")
+        return False
+
     if not check_file(file_path, dir_path):
         print("File not found!")
         return False
