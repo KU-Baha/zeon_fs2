@@ -3,6 +3,7 @@ import shutil
 from pathlib import Path
 
 BASE_FS_PATH = 'zeon_fs2'
+BASE_FS_CHILDREN_DIR = f'{BASE_FS_PATH}/objects'
 
 
 def check_file(file_path: str, dir_path: str = '') -> bool:
@@ -29,9 +30,10 @@ def add_file(dir_path, *args) -> bool:
         return False
 
     file_path = args[0]
-    base_dir_path = os.path.join(dir_path, BASE_FS_PATH)
+    init_path = os.path.join(dir_path, BASE_FS_PATH)
+    base_dir_path = os.path.join(dir_path, BASE_FS_CHILDREN_DIR)
 
-    if not check_file(base_dir_path):
+    if not check_file(init_path):
         print("FS not initialized!")
         return False
 
@@ -54,13 +56,19 @@ def del_file(dir_path, *args) -> bool:
         print("Command 'del' take 1 argument - file path!")
         return False
 
-    file_path = f"{dir_path}/{BASE_FS_PATH}/{args[0]}"
+    init_path = os.path.join(dir_path, BASE_FS_PATH)
 
-    if not check_file(file_path):
+    if not check_file(init_path):
+        print("FS not initialized!")
+        return False
+
+    base_dir_path = f"{dir_path}/{BASE_FS_CHILDREN_DIR}/{args[0]}"
+
+    if not check_file(base_dir_path):
         print("File not found!")
         return False
 
-    os.remove(file_path)
+    os.remove(base_dir_path)
     print("The file has been deleted")
     return True
 
@@ -70,9 +78,10 @@ def init_fs(dir_path, *args) -> bool:
         print("Command 'init' doesn't take arguments!")
         return False
 
-    fs_path = os.path.join(dir_path, BASE_FS_PATH)
+    init_path = os.path.join(dir_path, BASE_FS_PATH)
+    fs_path = os.path.join(dir_path, BASE_FS_CHILDREN_DIR)
 
-    if check_file(fs_path):
+    if check_file(init_path):
         print("FS already initialized!")
         return False
 
@@ -86,17 +95,18 @@ def file_list(dir_path, *args) -> list:
         print("Command 'list' doesn't take arguments!")
         return []
 
-    fs_path = os.path.join(dir_path, BASE_FS_PATH)
+    init_path = os.path.join(dir_path, BASE_FS_PATH)
+    base_dir_path = os.path.join(dir_path, BASE_FS_CHILDREN_DIR)
 
-    if not Path(fs_path).exists():
+    if not Path(init_path).exists():
         print("FS not initialized!")
         return []
 
-    data = os.listdir(fs_path)
+    data = os.listdir(base_dir_path)
 
     print(f"Files: {len(data)}\n")
 
     for file_name in data:
         print(file_name)
 
-    return os.listdir(fs_path)
+    return data
