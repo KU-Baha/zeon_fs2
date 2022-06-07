@@ -2,7 +2,7 @@ import os
 import shutil
 from pathlib import Path
 
-BASE_FS_PATH = 'zeon_fs3'
+BASE_FS_PATH = 'zeon_fs2'
 
 
 def check_file(file_path: str, dir_path: str = '') -> bool:
@@ -15,9 +15,11 @@ def check_file(file_path: str, dir_path: str = '') -> bool:
 def check_init(dir_path: str) -> bool:
     while len(str(dir_path)) != 1:
         path = Path(dir_path)
-        dir_path = path.parent.absolute()
         if Path(os.path.join(dir_path, BASE_FS_PATH)).exists():
+            print(f"Directory initialized in {dir_path}")
             return True
+        dir_path = path.parent.absolute()
+    print("Directory not initialized")
     return False
 
 
@@ -29,7 +31,7 @@ def add_file(dir_path, *args) -> bool:
     file_path = args[0]
     base_dir_path = os.path.join(dir_path, BASE_FS_PATH)
 
-    if not check_file(dir_path):
+    if not check_file(base_dir_path):
         print("FS not initialized!")
         return False
 
@@ -70,7 +72,7 @@ def init_fs(dir_path, *args) -> bool:
 
     fs_path = os.path.join(dir_path, BASE_FS_PATH)
 
-    if check_init(dir_path):
+    if check_file(fs_path):
         print("FS already initialized!")
         return False
 
@@ -86,7 +88,7 @@ def file_list(dir_path, *args) -> list:
 
     fs_path = os.path.join(dir_path, BASE_FS_PATH)
 
-    if not check_file(dir_path):
+    if not Path(fs_path).exists():
         print("FS not initialized!")
         return []
 
