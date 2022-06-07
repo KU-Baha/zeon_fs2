@@ -1,7 +1,7 @@
 import os
 import sys
 
-from helper.fs_helper import add_file
+from helper.helper import del_file
 
 
 def main():
@@ -13,7 +13,7 @@ def main():
 
     _, *args = argv
 
-    add_file(os.getcwd(), *args)
+    del_file(os.getcwd(), *args)
 
 
 if __name__ == '__main__':

@@ -1,6 +1,6 @@
 import os
 import sys
-from fs_package.command import commands_list
+from command import commands_list
 
 
 def main():
