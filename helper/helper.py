@@ -12,6 +12,15 @@ def check_file(file_path: str, dir_path: str = '') -> bool:
     return True
 
 
+def check_init(dir_path: str) -> bool:
+    while len(str(dir_path)) != 1:
+        path = Path(dir_path)
+        dir_path = path.parent.absolute()
+        if Path(os.path.join(dir_path, BASE_FS_PATH)).exists():
+            return True
+    return False
+
+
 def add_file(dir_path, *args) -> bool:
     if not len(args) == 1:
         print("Command 'add' take 1 argument - file path!")
@@ -20,7 +29,7 @@ def add_file(dir_path, *args) -> bool:
     file_path = args[0]
     base_dir_path = os.path.join(dir_path, BASE_FS_PATH)
 
-    if not check_file(base_dir_path):
+    if not check_file(dir_path):
         print("FS not initialized!")
         return False
 
@@ -61,7 +70,7 @@ def init_fs(dir_path, *args) -> bool:
 
     fs_path = os.path.join(dir_path, BASE_FS_PATH)
 
-    if check_file(fs_path):
+    if check_init(dir_path):
         print("FS already initialized!")
         return False
 
@@ -77,7 +86,7 @@ def file_list(dir_path, *args) -> list:
 
     fs_path = os.path.join(dir_path, BASE_FS_PATH)
 
-    if not Path(fs_path).exists():
+    if not check_file(dir_path):
         print("FS not initialized!")
         return []
 
