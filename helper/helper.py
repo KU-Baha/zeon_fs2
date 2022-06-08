@@ -46,6 +46,7 @@ def add_file(dir_path, *args) -> bool:
 
     file_name = Path(file_path).name
     file_hash = hash_file(file_path)
+    file_size = os.path.getsize(file_path)
 
     if check_file(file_name, base_dir_path):
         print('File already exists!')
@@ -53,7 +54,7 @@ def add_file(dir_path, *args) -> bool:
 
     database = database_list()
 
-    if not add_to_database(file_hash, file_name, database):
+    if not add_to_database(file_hash, file_size, file_name, database):
         print("File already exists in database!")
         return False
 
@@ -157,13 +158,13 @@ def check_in_database(new_file_hash: str, new_file_name: str, database: list) ->
     return False
 
 
-def add_to_database(new_file_hash: str, new_file_name: str, database: list) -> bool:
+def add_to_database(new_file_hash: str, new_file_size: int, new_file_name: str, database: list) -> bool:
     if check_in_database(new_file_hash, new_file_name, database):
         return False
 
     with open(DATABASE_PATH, 'w') as file:
         file.write('\n'.join(database))
-        file.write(f"{new_file_hash}, {new_file_name}\n")
+        file.write(f"{new_file_hash},{new_file_size},/{new_file_name}\n")
 
     return True
 
@@ -173,9 +174,15 @@ def delete_from_database(file_hash: str, file_name: str, database: list) -> bool
         return False
 
     for i in range(len(database)):
-        if file_hash in database[i] or file_name in database[i]:
-            del database[i]
-            return True
+        if file_hash not in database[i] or file_name not in database[i]:
+            continue
+
+        del database[i]
+
+        with open(DATABASE_PATH, 'w') as file:
+            file.write('\n'.join(database))
+
+        return True
 
     return False
 
