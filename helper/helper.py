@@ -173,9 +173,15 @@ def delete_from_database(file_hash: str, file_name: str, database: list) -> bool
         return False
 
     for i in range(len(database)):
-        if file_hash in database[i] or file_name in database[i]:
-            del database[i]
-            return True
+        if file_hash not in database[i] or file_name not in database[i]:
+            continue
+
+        del database[i]
+
+        with open(DATABASE_PATH, 'w') as file:
+            file.write('\n'.join(database))
+
+        return True
 
     return False
 
