@@ -57,7 +57,7 @@ def add_file(dir_path, *args) -> bool:
         print("File already exists in database!")
         return False
 
-    shutil.copyfile(file_path, f"{base_dir_path}/{file_name}")
+    shutil.copyfile(file_path, f"{base_dir_path}/{file_hash}")
 
     print("Success added")
     return True
@@ -70,20 +70,26 @@ def del_file(dir_path, *args) -> bool:
 
     init_path = os.path.join(dir_path, BASE_FS_PATH)
     file_path = args[0]
+    database = database_list()
+
+    data = get_data_by_key(file_path, database)
+
+    if not data:
+        print("File not found!")
+        return False
+
+    file_name = data.get('file_name')
+    file_hash = data.get('file_hash')
 
     if not check_file(init_path):
         print("FS not initialized!")
         return False
 
-    base_dir_path = f"{dir_path}/{BASE_FS_CHILDREN_DIR}/{file_path}"
+    base_dir_path = f"{dir_path}/{BASE_FS_CHILDREN_DIR}/{file_hash}"
 
     if not check_file(base_dir_path):
         print("File not found!")
         return False
-
-    database = database_list()
-    file_name = Path(file_path).name
-    file_hash = hash_file(file_path)
 
     if not delete_from_database(file_hash, file_name, database):
         print("File not found in database!")
@@ -132,10 +138,10 @@ def file_list(dir_path, *args) -> list:
 
     print(f"Files: {len(data)}\n")
 
-    for file_name in data:
-        file_hash = hash_file(os.path.join(base_dir_path, file_name))
-        if check_in_database(file_hash, file_name, database):
-            print(file_name)
+    for file_hash in data:
+        data = get_data_by_key(file_hash, database)
+        if data:
+            print(data.get('file_name'))
 
     return data
 
@@ -192,3 +198,14 @@ def hash_file(file_path: str) -> str:
 
     with open(file_path, "rb") as file:
         return sha1(file.read()).hexdigest()
+
+
+def get_data_by_key(key: str, database: list) -> dict:
+    for line in database:
+        if key not in line:
+            continue
+
+        data = line.split(',')
+
+        return {'file_hash': data[0], 'file_name': data[1]}
+    return {}
