@@ -27,11 +27,12 @@ def check_init(dir_path: str) -> bool:
 
 
 def add_file(dir_path, *args) -> bool:
-    if not len(args) == 1:
-        print("Command 'add' take 1 argument - file path!")
+    if not len(args) == 2:
+        print("Command 'add' take 2 argument!")
         return False
 
     file_path = args[0]
+    file_name = args[1]
 
     init_path = os.path.join(dir_path, BASE_FS_PATH)
     base_dir_path = os.path.join(dir_path, BASE_FS_CHILDREN_DIR)
@@ -44,11 +45,10 @@ def add_file(dir_path, *args) -> bool:
         print("File not found!")
         return False
 
-    file_name = Path(file_path).name
     file_hash = hash_file(file_path)
     file_size = os.path.getsize(file_path)
 
-    if check_file(file_name, base_dir_path):
+    if check_file(file_hash, base_dir_path):
         print('File already exists!')
         return False
 
@@ -156,17 +156,8 @@ def database_list() -> list:
         return file.read().split('\n')
 
 
-def check_in_database(new_file_hash: str, new_file_name: str, database: list) -> bool:
-    for line in database:
-
-        if new_file_hash in line or new_file_name in line:
-            return True
-
-    return False
-
-
 def add_to_database(new_file_hash: str, new_file_size: int, new_file_name: str, database: list) -> bool:
-    if check_in_database(new_file_hash, new_file_name, database):
+    if get_data_by_key(new_file_hash, database):
         return False
 
     with open(DATABASE_PATH, 'w') as file:
@@ -177,7 +168,7 @@ def add_to_database(new_file_hash: str, new_file_size: int, new_file_name: str, 
 
 
 def delete_from_database(file_hash: str, file_name: str, database: list) -> bool:
-    if not check_in_database(file_hash, file_name, database):
+    if not get_data_by_key(file_hash, database):
         return False
 
     for i in range(len(database)):
