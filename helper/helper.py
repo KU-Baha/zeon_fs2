@@ -16,12 +16,15 @@ def check_file(file_path: str, dir_path: str = '') -> bool:
 
 
 def check_init(dir_path: str) -> bool:
-    while len(str(dir_path)) != 1:
+    path = Path(dir_path)
+    while len(str(path.parent.absolute())) > 1:
         path = Path(dir_path)
-        if Path(os.path.join(dir_path, BASE_FS_PATH)).exists():
+        if Path(os.path.join(dir_path, '.zeon_fs2')).is_dir():
             print(f"Directory initialized in {dir_path}")
             return True
+
         dir_path = path.parent.absolute()
+
     print("Directory not initialized")
     return False
 
@@ -162,7 +165,7 @@ def add_to_database(new_file_hash: str, new_file_size: int, new_file_name: str, 
 
     with open(DATABASE_PATH, 'w') as file:
         file.write('\n'.join(database))
-        file.write(f"{new_file_hash},{new_file_size},/{new_file_name}\n")
+        file.write(f"{new_file_hash},{new_file_size},{new_file_name}\n")
 
     return True
 
