@@ -4,13 +4,25 @@
 # from helper.helper import get_data_by_key
 # from treelib import Node, Tree
 #
-# data = [
-#     "62893484c3df2321c57ec12d50c3ab1695c1cb97,197,/command/test.py",
-#     "da39a3ee5e6b4b0d3255bfef95601890afd80709,0,/glob/test.py",
-#     "da39a3ee5e6b4b0d3255bfef95601890afd8s709,50,/glob/gg/ff/tess.py",
-#     "da39a3ee5e6b4b0d3255bfef95601890afd807109,0,/glob/gng/test.py",
-# ]
-#
+data = [
+    "62893484c3df2321c57ec12d50c3ab1695c1cb97,197,/command/test.py",
+    "da39a3ee5e6b4b0d3255bfef95601890afd80709,0,/glob/test.py",
+    "da39a3ee5e6b4b0d3255bfef95601890afd8s709,50,/glob/gg/ff/tess.py",
+    "da39a3ee5e6b4b0d3255bfef95601890afd807109,0,/glob/gng/test.py",
+]
+
+
+def create_tree(path, fs):
+    root = fs
+    if root in fs:
+        root[path] = fs
+    root = {}
+    return root
+
+
+fs = {}
+ 
+print(create_tree(data, fs))
 # result = {
 #     '/': {'parent': None},
 #     'home': {'parent': '/'},
