@@ -9,10 +9,8 @@ def main():
 
     dir_path = os.getcwd()
 
-    check_init(dir_path)
-
     if len(argv) <= 1:
-        print("Write command!")
+        check_init(dir_path)
         exit(0)
 
     _, command, *args = argv

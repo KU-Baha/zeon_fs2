@@ -2,7 +2,7 @@ import os
 import shutil
 from pathlib import Path
 
-BASE_FS_PATH = 'zeon_fs2'
+BASE_FS_PATH = '.zeon_docker'
 BASE_FS_CHILDREN_DIR = f'{BASE_FS_PATH}/objects'
 
 
