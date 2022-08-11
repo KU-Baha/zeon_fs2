@@ -17,7 +17,7 @@ def check_file(file_path: str, dir_path: str = '') -> bool:
 
 def check_init(dir_path: str) -> bool:
     path = Path(dir_path)
-    while len(str(path.parent.absolute()).split('/')) > 1:
+    while str(path.parent.absolute()) != '/':
         path = Path(dir_path)
         if Path(os.path.join(dir_path, '.zeon_fs2')).is_dir():
             print(f"Directory initialized in {dir_path}")
@@ -25,7 +25,7 @@ def check_init(dir_path: str) -> bool:
 
         dir_path = path.parent.absolute()
 
-    print("Directory not initialized")
+    print("Directory not initialize d")
     return False
 
 
