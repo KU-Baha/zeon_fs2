@@ -1,7 +1,8 @@
+from helper.docker_helper import get_meta
 from helper.server import start_server
 
 
-def info_helper(_, *args):
+def info_helper(dir_path, *args):
     if len(args) != 1:
         print("Info take 1 argument - ip:port or only port!")
         return
@@ -12,6 +13,9 @@ def info_helper(_, *args):
     if len(arg) == 2:
         ip, port = arg
     else:
-        port = arg[1]
+        port = arg[0]
+
+    if not get_meta(dir_path):
+        return
 
     start_server(ip, int(port))

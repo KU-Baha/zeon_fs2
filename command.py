@@ -11,5 +11,4 @@ commands_list = {
     'del': del_file,
     'info': info_helper,
     'help': docker_help,
-    'meta': get_meta
 }
